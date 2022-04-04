@@ -1,34 +1,29 @@
 ---
 title: "NEWS.md"
 authors: "Monsuru Adepeju"
-date: "27 March 2022"
+date: "4th April 2022"
 output: html_document
 ---
 
-Details of changes made (27/03/2022):
+Details of changes made (04/04/2022):
 
-1. Added a `vignette` to guide the use of the package
-2. Added a new function, i.e. `compare_boundary.R`
-3. Added a parameter `interactive` to `make_grids.R` function. 
-4. Added new data set,  `birmingham_boundary.rda` inside `inst/extdata`
-5. Modified the `DESCRIPTION` file: R (>= 4.0.0) to R (>= 4.1.0) 
+1. added a new function, 'stm.R'
+2. Modified 'psim_artif' & 'psim_real' to make use of 'stm.R' 
+3. Editted the vignette accordingly. 
 
-Note: Package checked on multiple platforms, and passed! 
-## Test environments
-* local OS Windows, R 3.5.3
-* Fedora Linux (R-devel), R 3.5.3
-* win-builder (devel and release), R 3.5.3 
+## Note: Package checked on multiple platforms, and passed! 
 
-## R CMD check results
-There were no ERRORs, WARNINGs or 2 NOTEs. 
+### Test environments
+* local OS Windows, R 4.1.0
+* Fedora Linux (R-devel), R 4.1.0
+* win-builder (devel and release), R 4.1.0
+
+### R CMD check results
+There were no ERRORs, WARNINGs or 1 NOTEs. 
 
 **NOTEs 1**: The note pertains to using a lot of non-default packages. 
 ***Author's comment***: This will be addressed in 
 the future.
-
-**NOTEs2**: Found the (possibly) invalid DOIs.
-***Author's comment***: All DOI's are correct!
-
 
 Thanks,
 

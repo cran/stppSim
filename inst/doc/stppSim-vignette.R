@@ -75,7 +75,7 @@ knitr::include_graphics("trend.png")
 #  #simulate data
 #  artif_stpp <- psim_artif(n_events=pt_sizes, start_date = "2021-01-01",
 #    poly=boundary, n_origin=50, resistance_feat = NULL,
-#    field = "restrVal",
+#    field = NA,
 #    n_foci=5, foci_separation = 10, mfocal = NULL,
 #    conc_type = "dispersed",
 #    p_ratio = 20, s_threshold = 50, step_length = 20,
@@ -166,7 +166,7 @@ knitr::include_graphics("samplerealvssampleaggregated.png")
 #  sim_fullData <- psim_real(n_events=2000, ppt=dat_sample,
 #    start_date = NULL, poly = NULL, s_threshold = NULL,
 #    step_length = 20, n_origin=50, restriction_feat=landuse,
-#    field=NA, p_ratio=20, crsys = "EPSG:27700")
+#    field="restrVal", p_ratio=20, crsys = "EPSG:27700")
 #  
 
 ## ----eval=FALSE, echo=FALSE, warning=FALSE------------------------------------
