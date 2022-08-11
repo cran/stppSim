@@ -1,32 +1,37 @@
----
-title: "NEWS.md"
-authors: "Monsuru Adepeju"
-date: "4th April 2022"
-output: html_document
----
+# stppSim 1.2.7
 
-Details of changes made (04/04/2022):
+## Bug Fixing
 
-1. added a new function, 'stm.R'
-2. Modified 'psim_artif' & 'psim_real' to make use of 'stm.R' 
-3. Editted the vignette accordingly. 
+- `artif_spo()` now utilizes `raster::projection()` instead of `raster::crs()` to assign a coordinate system to a simple point feature.
 
-## Note: Package checked on multiple platforms, and passed! 
+# stppSim 1.2.1
 
-### Test environments
-* local OS Windows, R 4.1.0
-* Fedora Linux (R-devel), R 4.1.0
-* win-builder (devel and release), R 4.1.0
+## Changes
 
-### R CMD check results
-There were no ERRORs, WARNINGs or 1 NOTEs. 
+- Included a `vignette` to guide the use of the package
+- `compare_boundary()` added to compare areas of two boundaries
+- `make_grids()` function now include `interactive` argument the control plotting  
+- New dataset `birmingham_boundary.rda` included in `inst/extdata`
+- `DESCRIPTION` modified (R (>= 4.0.0) to R (>= 4.1.0))
 
-**NOTEs 1**: The note pertains to using a lot of non-default packages. 
-***Author's comment***: This will be addressed in 
-the future.
+# stppSim 1.2.0
 
-Thanks,
+## Changes
 
-Monsuru
+- Removed `set.seed` from `chull_poly()`
+- Added `mfocal` argument to `artif_spo()` and `psim_artif()` functions.
 
+# stppSim 1.1.0
 
+## Changes
+
+- The length of the title reduced to less than 65 characters.
+- Added references to the `DESCRIPTION` file
+- Added `\value` field to `.Rd` files regarding exported methods. Also, included explanations of the function results.
+- Suppressed unnecessary messages to the console.
+- Removed parallel processing functions altogether
+- Removed seed set within functions
+
+# stppSim 1.0.0
+
+- First CRAN submission
