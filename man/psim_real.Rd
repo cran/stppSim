@@ -5,9 +5,11 @@
 \title{Stpp from real (sample) origins}
 \usage{
 psim_real(n_events, ppt, start_date = NULL, poly = NULL,
-s_threshold = NULL, step_length = 20, n_origin=50,
+netw = NULL, s_threshold = NULL, step_length = 20, n_origin=50,
 restriction_feat=NULL, field=NA,
-p_ratio=20, interactive = FALSE, crsys = NULL)
+p_ratio=20, interactive = FALSE, s_range = 150,
+s_interaction = "medium", tolerance = 0.07,
+crsys = NULL)
 }
 \arguments{
 \item{n_events}{number of points
@@ -18,7 +20,7 @@ represent different integer values.}
 
 \item{ppt}{A 3-column matrix or list containing
 \code{x} - eastings, \code{y} - northing, and \code{t} - time of occurrence
-(in the format: `yyyy-mm-dd').}
+(in the format: `yyyy-mm-dd')}
 
 \item{start_date}{the start date of the temporal pattern.
 The date should be in the format \code{"yyyy-mm-dd"}.
@@ -27,6 +29,12 @@ The temporal pattern will normally cover
 
 \item{poly}{(An sf or S4 object)
 a polygon shapefile defining the extent of the landscape}
+
+\item{netw}{(An sf or S4 object)
+The network path of the landscape
+(e.g. road and/or street). Default: \code{NULL}.
+If provided each event is snapped to the closest
+network path/segment.}
 
 \item{s_threshold}{defines the spatial
 perception range of a walker at a given
@@ -66,8 +74,28 @@ a user is able to preview the spatial and temporal models
 of the expected distribution of the final simulated
 events (points).}
 
+\item{s_range}{A value (in metres), not less than 150,
+specifying the maximum range of spatial
+interaction across the space. For example, for 150m,
+the intervals of spatial interactions are created as
+\code{(0, 50]}, \code{(50 - 100]}, and \code{(100-150]},
+representing the "small", "medium", and "large",
+spatial interaction ranges, respectively. If
+\code{s_range} is set as \code{NULL}, simulation
+focusses only on generating point pattern with
+similar spatiotemporal patterns as the sample
+dataset.}
+
+\item{s_interaction}{(string) indicating the
+type of spatial interaction to detect.
+Default: \code{"medium"} (See parameter \code{'s_range'})}
+
+\item{tolerance}{Pvalue to use for the extraction of
+space-time interaction in the sample data. Default
+value: \code{0.05}.}
+
 \item{crsys}{(string) the EPSG code of the projection
-system of the \code{ppt} coordinates. This only used if
+system of the \code{ppt} coordinates. This is only used if
 \code{poly} argument is \code{NULL}.
 See "http://spatialreference.org/" for the list of
 EPSG codes for different regions of the world.
@@ -75,31 +103,31 @@ As an example, the EPSG code for the British National Grid
 projection system is: \code{"EPSG:27700"}.}
 }
 \value{
-Returns a list of artificial spatiotemporal
-point patterns generated based on a sample
-real data.
+A list of artificial spatiotemporal
+point patterns and interaction generated based on a sample
+(real) data.
 }
 \description{
 Generates spatiotemporal point pattern
 from origins sampled based on real sample dataset.
 }
 \details{
-The movement characteristics of walkers as well
-as the configuration of the landscape are defined
-based on the properties learnt from the real sample
-data. See under \code{psim_artif}
-function for details on the computation time and
-the exported objects.
+The spatial and temporal patterns and
+interactions detected in sample datasets
+are extrapolated to synthetise larger
+data size. Details of the spatiotemporal
+interactions detected in the sample
+dataset are provided. If the street network
+of the area is provided, each point is
+snapped to its nearest street segment.
 }
 \examples{
 \dontrun{
 data(camden_crimes)
 #subset 'theft' crime
-theft <- camden_crimes[which(camden_crimes$type ==
-"Theft"),]
-
+theft <- camden_crimes[which(camden_crimes$type == "Theft"),]
 #specify the proportion of full data to use
-sample_size <- 0.2
+sample_size <- 0.3
 set.seed(1000)
 dat_sample <- theft[sample(1:nrow(theft),
 round((sample_size * nrow(theft)), digits=0),
@@ -107,17 +135,18 @@ replace=FALSE),1:3]
 #plot(dat_sample$x, dat_sample$y) #preview
 
 #load boundary and land use of Camden
-load(file = system.file("extdata", "camden.rda",
-package="stppSim"))
-landuse = camden$landuse # get landuse
-
+#load(file = system.file("extdata", "camden.rda",
+#package="stppSim"))
+#landuse = camden$landuse # get landuse
+landuse <- stppSim:::landuse
 #simulate data
 simulated_stpp <- psim_real(n_events=2000, ppt=dat_sample,
-start_date = NULL, poly = NULL, s_threshold = NULL,
+start_date = NULL, poly = NULL, netw = NULL, s_threshold = NULL,
 step_length = 20, n_origin=20,
 restriction_feat = NULL, field=NULL,
-p_ratio=20, interactive = FALSE, crsys = "EPSG:27700")
-
+p_ratio=20, interactive = FALSE, s_range = 150,
+s_interaction = "medium", tolerance = 0.07,
+crsys = "EPSG:27700")
 #If `n_events` is a vector of values,
 #retrieve the simulated data for the
 #corresponding vector element by using
@@ -126,13 +155,11 @@ p_ratio=20, interactive = FALSE, crsys = "EPSG:27700")
 #simulated_stpp[[1]].
 
 #The above example simulates point patterns on
-#an unrestricted landscape. If
-#`restriction_feat = landuse` and
-#`field = "restrVal"`, then the simulation
+#an unrestricted landscape. If \code{restriction_feat = landuse} and \code{field = "restrVal"},
+then the simulation
 #is run with the landuse features as restrictions
 #on the landscape.
 }
-
 }
 \references{
 Davies, T.M. and Hazelton, M.L. (2010), Adaptive

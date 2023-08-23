@@ -5,7 +5,8 @@
 \title{Global temporal pattern (GTP)}
 \usage{
 gtp(start_date, trend = "stable",
-slope = NULL, first_pDate = NULL, show.plot =FALSE)
+slope = NULL, shortTerm = "cyclical",
+fPeak = 90, show.plot =FALSE)
 }
 \arguments{
 \item{start_date}{the start date of the temporal pattern.
@@ -22,14 +23,16 @@ an \code{"rising"} or \code{"falling"} trend is specified.
 Options: \code{"gentle"} or \code{"steep"}. The default value is
 set as \code{NULL} for the \code{stable} trend.}
 
-\item{first_pDate}{date of the first seasonal peak of
-the GTP (format: \code{"yyyy-mm-dd"}).
-Default value is \code{NULL}, in which first seasonal
-peak of 90 days is utilized.
-seasonal cycle of 180 days is utilized (that is,
-a seasonal cycle of 180 days).}
+\item{shortTerm}{type of short- to medium-term
+fluctuations (patterns) of the time series.
+Options are: \code{`"cyclical"` and `"acyclical"`}.
+Default is: \code{`"cyclical"`}.}
 
-\item{show.plot}{(logical) Shows GTP.
+\item{fPeak}{first seasonal
+peak of cyclical short term. Default value is \code{90}.
+Set as \code{NULL} for \code{"acyclical"} short term pattern.}
+
+\item{show.plot}{(logical) Shows 'gtp'.
 Default is \code{FALSE}.}
 }
 \value{
@@ -47,5 +50,6 @@ trends and patterns of the point patterns to be simulated.
 }
 \examples{
 gtp(start_date = "2020-01-01", trend = "stable",
-slope = NULL, first_pDate = "2020-02-28", show.plot = FALSE)
+slope = NULL, shortTerm = "cyclical",
+fPeak = 90, show.plot = FALSE)
 }

@@ -4,11 +4,13 @@
 \alias{psim_artif}
 \title{Stpp from synthetic origins}
 \usage{
-psim_artif(n_events=1000, start_date = "yyyy-mm-dd",
-poly, n_origin, restriction_feat=NULL, field,
+psim_artif(n_events=1000, start_date = "2021-01-01",
+poly, netw = NULL, n_origin, restriction_feat=NULL, field,
 n_foci, foci_separation, mfocal = NULL, conc_type = "dispersed",
-p_ratio, s_threshold = 50, step_length = 20,
-trend = "stable", first_pDate=NULL,
+p_ratio=20, s_threshold = 50, step_length = 20,
+trend = "stable", shortTerm = "cyclical", fPeak=90,
+s_band = c(0, 200),
+t_band = c(1, 5, 10),
 slope = NULL, interactive = FALSE, show.plot=FALSE, show.data=FALSE, ...)
 }
 \arguments{
@@ -20,10 +22,16 @@ represent different integer values.}
 
 \item{start_date}{the start date of the temporal pattern.
 The date should be in the format \code{"yyyy-mm-dd"}.
-The GTP will normally cover a 1-year period.}
+The 'gtp' will normally cover a 1-year period.}
 
 \item{poly}{(An sf or S4 object)
-a polygon shapefile defining the extent of the landscape}
+a polygon shapefile defining the extent of the landscape.}
+
+\item{netw}{(An sf or S4 object)
+The network path of the landscape
+(e.g. road and/or street). Default: \code{NULL}.
+If provided each event is snapped to the closest
+network path/segment.}
 
 \item{n_origin}{number of locations to serve as
 origins for walkers. Default:\code{50}.}
@@ -83,12 +91,24 @@ long-term trend. Options are:
 \code{"falling"}, \code{"stable"},
 and \code{"rising"}. Default value is: \code{"stable"}.}
 
-\item{first_pDate}{date of the first seasonal peak of
-the GTP (format: \code{"yyyy-mm-dd"}).
-Default value is \code{NULL}, in which first seasonal
-peak of 90 days is utilized.
-seasonal cycle of 180 days is utilized (that is,
-a seasonal cycle of 180 days).}
+\item{shortTerm}{type of short- to medium-term
+fluctuations (patterns) of the time series.
+Options are: \code{`"cyclical"` and `"acyclical"`}.
+Default is: \code{`"cyclical"`}.}
+
+\item{fPeak}{first seasonal
+peak of cyclical short term. Default value is \code{90}.
+Only used for \code{"cyclical"} short term pattern.}
+
+\item{s_band}{distance bandwidth within which
+the event re-occurences are maximized (i.e.,
+interactions are maximum). Specified as a vector of
+two distance values. Default: \code{c(0, 200)}.}
+
+\item{t_band}{temporal bandwidth within which
+event re-occurences are maximized (i.e., interactions
+are maximum). Specified as a vector of values (in days)
+\code{c(1, 5, 7, 14)}.}
 
 \item{slope}{slope of the long-term trend when
 an \code{"rising"} or \code{"falling"} trend is specified.
@@ -113,7 +133,7 @@ functions.}
 }
 \value{
 Returns a list of artificial spatiotemporal
-point patterns generated from scratch.
+point patterns based on user-defined parameters.
 }
 \description{
 Generates spatiotemporal
@@ -121,45 +141,33 @@ point patterns based on a set of
 synthesized origins.
 }
 \details{
-Both the walkers
-and the landscape are configured arbitrarily (in accordance
-with the users knowledge of the domain.
-This function is computationally intensive. When run,
-an estimate of the expected computational time
-is first printed in the console for the user.
-Argument with the largest impacts on the computational
-time include \code{n_origin=50}, and \code{restriction_feat} when
-not \code{NULL}. Note: the \code{n_events}
-argument has little of no impacts on the
-computational time, and so it is recommended that
-that a user inputs a vector of several values
-to simulate.
-Lastly, in addition to exporting the simulated
-point patterns, the
-function also returns the simulated origins,
-the boundary and the restriction features
-(if supplied).
+Simulate artificial spatiotemporal patterns
+and interactions based user specifications.
 }
 \examples{
 \dontrun{
 
 #load boundary and land use of Camden
-load(file = system.file("extdata", "camden.rda",
-package="stppSim"))
-boundary = camden$boundary # get boundary
-landuse = camden$landuse # get landuse
-
+#load(file = system.file("extdata", "camden.rda",
+#package="stppSim"))
+#boundary = camden$boundary # get boundary
+#landuse = camden$landuse # get landuse
+boundary <- stppSim:::boundary
+landuse <- stppSim:::landuse
 #In this example, we will use a minimal number of
 #'n_origin' (i.e. `20`) for faster computation:
 
 #simulate data
 simulated_stpp <- psim_artif(n_events=200, start_date = "2021-01-01",
-poly=boundary, n_origin=20, restriction_feat = NULL,
+poly=boundary, netw = NULL, n_origin=20, restriction_feat = NULL,
 field = NULL,
 n_foci=1, foci_separation = 10, mfocal = NULL,
 conc_type = "dispersed",
-p_ratio = 20, s_threshold = 50, step_length = 20,
-trend = "stable", first_pDate=NULL,
+p_ratio = 20, s_threshold = 50,
+step_length = 20,
+trend = "stable", shortTerm = "cyclical",
+fPeak=90, s_band = c(0, 200),
+t_band = c(1, 5, 10),
 slope = NULL, interactive = FALSE, show.plot=FALSE, show.data=FALSE)
 
 #If `n_events` is a vector of values,

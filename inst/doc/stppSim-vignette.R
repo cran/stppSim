@@ -79,7 +79,7 @@ knitr::include_graphics("trend.png")
 #    n_foci=5, foci_separation = 10, mfocal = NULL,
 #    conc_type = "dispersed",
 #    p_ratio = 20, s_threshold = 50, step_length = 20,
-#    trend = "stable", first_pDate=NULL,
+#    trend = "stable", fpeak=NULL,
 #    slope = NULL,show.plot=FALSE, show.data=FALSE)
 #  
 
@@ -94,6 +94,31 @@ knitr::include_graphics("temporalscratch.png")
 
 ## ----figs6, echo=FALSE, out.width="50%", out.height="50%", fig.align = "center", fig.cap=fig$cap("figs6", "Gtp with an earlier first seasonal peak")----
 knitr::include_graphics("onemonth.png")
+
+## ----eval=FALSE, echo = TRUE, message=FALSE, warning=FALSE--------------------
+#  
+#  #load the data
+#  load(file = system.file("extdata", "camden.rda",
+#                          package="stppSim"))
+#  
+#  boundary <- camden$boundary # get boundary data
+#  
+#  #specifying data sizes
+#  pt_sizes = c(1500)
+#  
+#  #simulate data
+#  artif_stpp <- psim_artif(n_events=pt_sizes, start_date = NULL,
+#    poly=boundary, n_origin=50, resistance_feat = NULL,
+#    field = NA,
+#    n_foci=5, foci_separation = 10, mfocal = NULL,
+#    conc_type = "dispersed",
+#    p_ratio = 20, s_threshold = 50, step_length = 20,
+#    trend = "stable", fpeak=NULL,
+#    shortTerm = "acyclical"
+#    s_band = c(0, 200),
+#    t_band = c(1,2),
+#    slope = NULL,show.plot=FALSE, show.data=FALSE)
+#  
 
 ## ----eval=FALSE, message=FALSE, warning=FALSE---------------------------------
 #  
@@ -177,6 +202,69 @@ knitr::include_graphics("samplerealvssampleaggregated.png")
 
 ## ----eval=FALSE, echo=TRUE, warning=FALSE-------------------------------------
 #  summary(sim_fullData[[1]])
+
+## ----eval=FALSE, message=FALSE, warning=FALSE---------------------------------
+#  
+#  #get the restriction data
+#  landuse <- as_Spatial(landuse)
+#  
+#  simulated_stpp_ <- psim_real(
+#    n_events=2000,
+#    ppt=dat_sample,
+#    start_date = NULL,
+#    poly = NULL,
+#    netw = NULL,
+#    s_threshold = NULL,
+#    step_length = 20,
+#    n_origin=100,
+#    restriction_feat = landuse,
+#    field="restrVal",
+#    p_ratio=20,
+#    interactive = FALSE,
+#    s_range = 600,
+#    s_interaction = "medium",
+#    crsys = "EPSG:27700"
+#  )
+#  
+
+## ----eval=FALSE, message=FALSE, warning=FALSE---------------------------------
+#  
+#  #extract the output of a simulation
+#  stpp <- simulated_stpp_[[1]]
+#  
+#  stpp <- stpp %>%
+#    dplyr::mutate(date = substr(datetime, 1, 10))%>%
+#    dplyr::mutate(date = as.Date(date))
+#  
+#  #define spatial and temporal thresholds
+#  s_range <- 600
+#  s_thres <- seq(0, s_range, len=4)
+#  
+#  t_thres <- 1:31
+#  
+#  #detect space-time interactions
+#  myoutput2 <- NRepeat(x = stpp$x, y = stpp$y, time = stpp$date,
+#                          sds = s_thres,
+#                          tds = t_thres,
+#                          s_include.lowest = FALSE, s_right = FALSE,
+#                          t_include.lowest = FALSE, t_right = FALSE)
+#  
+#  #extract the knox ratio
+#  knox_ratio <- round(myoutput2$knox_ratio, digits = 2)
+#  
+#  #extract the corresponding significance values
+#  pvalues <- myoutput2$pvalues
+#  
+#  #append asterisks to significant results
+#  for(i in 1:nrow(pvalues)){ #i<-1
+#      id <- which(pvalues[i,] <= 0.05)
+#      knox_ratio[i,id] <- paste0(knox_ratio[i,id], "*")
+#  
+#  }
+#  
+#  #output the results
+#  knox_ratio
+#  
 
 ## ----figs8, echo=FALSE, out.width="100%", out.height="100%", fig.align = "center", fig.cap=fig$cap("figs8", "Setting an earlier first seasonal peak")----
 knitr::include_graphics("simvsreal_spatial.png")

@@ -20,6 +20,20 @@
 #' two terms of a Pareto ratio.
 #' For example, a value of \code{20}
 #' implies a \code{20:80} Pareto ratio.
+#' @param s_range A value (in metres), not less than 150,
+#' specifying the maximum range of spatial
+#' interaction across the space. For example, for 150m,
+#' the intervals of spatial interactions are created as
+#' \code{(0, 50]}, \code{(50 - 100]}, and \code{(100-150]},
+#' representing the "small", "medium", and "large",
+#' spatial interaction ranges, respectively. If
+#' `s_range` is set as `NULL`, simulation
+#' focusses only on generating point pattern with
+#' similar spatiotemporal patterns as the sample
+#' dataset.
+#' @param tolerance Pvalue to use for the extraction of
+#' space-time interaction in the sample data. Default
+#' value: \code{0.07}.
 #' @param crsys (string) the EPSG code of the projection
 #' system of the `ppt` coordinates. This only used if
 #' `poly` argument is \code{NULL}.
@@ -30,9 +44,11 @@
 #' @param show.plot (TRUE or FALSE) Whether to show
 #' some displays.
 #' @usage stp_learner(ppt, start_date = NULL, poly = NULL,
-#' n_origin=50, p_ratio, gridSize = 150,
+#' n_origin=50, p_ratio, gridSize = 150, s_range =  150,
+#' tolerance = 0.07,
 #' crsys = NULL, show.plot = FALSE)
 #' @examples
+#' \dontrun{
 #' #Goal: To learn the ST properties
 #' #of a sample data, for the purpose of
 #' #simulating the full dataset (see `psim_real`).
@@ -50,8 +66,11 @@
 #'
 #' stp_learner(dat_sample,
 #' start_date = NULL, poly = NULL, n_origin=50,
-#' p_ratio=20, gridSize = 150, crsys = "EPSG:27700",
+#' p_ratio=20, gridSize = 150,
+#' s_range =  150, tolerance = 0.07,
+#' crsys = "EPSG:27700",
 #' show.plot = FALSE)
+#' }
 #' @details Returns an object of the class `real_spo`,
 #' storing details of the spatiotemporal
 #' properties of the sample data learnt.
@@ -76,15 +95,25 @@
 #'
 stp_learner <- function(ppt, start_date = NULL, poly = NULL,
                         n_origin=50, p_ratio, gridSize = 150,
-                        crsys = NULL, show.plot = FALSE){
+                        s_range =  150, tolerance = 0.07,
+                        crsys = NULL,
+                        show.plot = FALSE){
 
-  prob <- NULL
+  prob <- NRepeat <- NULL
 
   output <- list()
 
   #global var
   grid_id <- count <- NULL
   origins <- list()
+
+  #check spatial range
+  if(!is.null(s_range)){
+  if(s_range < 150){
+    stop("Spatial range ('s_range') cannot be less than 150.")
+  }
+  }
+
 
   #check if start_date is supplied, if not
   #extract from the point data.
@@ -194,7 +223,7 @@ stp_learner <- function(ppt, start_date = NULL, poly = NULL,
 
     #scaling by a factor of 10
     #for high intensity data
-    s_factor <- 10
+    s_factor <- 20
     #--------------------
     loessData$y <- loessData$y * s_factor
 
@@ -261,8 +290,8 @@ stp_learner <- function(ppt, start_date = NULL, poly = NULL,
 
     #suppressWarnings(
 
-    b1 <- hpi(x=ppt_df[,1])
-    b2 <- hpi(x=ppt_df[,2])
+    b1 <- ks::hpi(x=ppt_df[,1])
+    b2 <- ks::hpi(x=ppt_df[,2])
 
     sbw <- (b1 + b2) / 2
     #)
@@ -373,13 +402,79 @@ stp_learner <- function(ppt, start_date = NULL, poly = NULL,
     #if a user deems fit.
 
     spo <- spo %>%
-      select(x, y, prob, count, grid_id)
+      dplyr::select(x, y, prob, count, grid_id)
 
     #x <- as.numeric(spo$x)
     #y <- as.numeric(spo$y)
 
     #spo_xy <- data.frame(cbind(x,y))
     #colnames(spo_xy) <- c("x","y")
+
+
+    #---------------------------------------------------------
+    #detect space-time signature
+    #spatial threshold
+
+    if(!is.null(s_range)){
+
+    s_list <- seq(0, s_range, len=4)
+
+    #temporal thresholds
+    #ppt <- burg_df_samp
+    #ppt <- burg_df
+    colnames(ppt) <- c("x", "y", "date")
+
+    #checking the st interaction
+    ppt_proc <- ppt %>%
+      dplyr::mutate(date = as.Date(substr(date, 1, 10)))%>%
+      dplyr::select(x, y,date)%>%
+      data.frame()
+
+
+    flush.console()
+    print("****Detecting spatiotemporal signatures:")
+
+
+    myoutput2 <- NRepeat(x = ppt_proc$x, y = ppt_proc$y, time = ppt_proc$date,
+                              sds = s_list,
+                              tds = 1:30,
+                              #tds = seq(1, 30, 2),
+                              s_include.lowest = FALSE, s_right = FALSE, # include leftmost and include right most
+                              t_include.lowest = FALSE, t_right = FALSE)#) # include exclude leftmost and include right most
+      res <- myoutput2$pvalues
+      c_005 <- list()
+      for(h in 1:nrow(res)){ #h<-3
+        ids <- as.numeric(which(res[h,] <= tolerance))
+        if(length(ids)!=0){
+          c_005[[h]] <- ids
+          names(c_005)[h] <- rownames(res)[h]
+        }
+        if(length(ids)==0){
+          c_005[[h]] <- "NA"
+          names(c_005)[h] <- rownames(res)[h]
+        }
+      }
+
+      c_005
+    st_band <- c_005
+
+    #}
+
+    if(length(st_band) != 0){
+      st_band <- st_band
+    }
+
+    ##collapsing <- unlist(st_band)
+    if(length(st_band) == 0){
+      st_band <- NULL
+    }
+
+    }
+
+    if(is.null(s_range)){
+      st_band <- NULL
+    }
+    #---------------------------------------------------------
 
     output$origins <- spo
     output$gtp <- gtp
@@ -388,11 +483,11 @@ stp_learner <- function(ppt, start_date = NULL, poly = NULL,
     #output$plot <- p
     output$poly <- boundary_ppt
     output$Class <- "real_spo"
-
-    output$origins <- spo
-
+    output$st_sign <- st_band
+    output$t_bands <- colnames(res)
+    #output$t_list <- t_list
+    #output$t_sign <- t_bd
 
     return(output)
-
 }
 

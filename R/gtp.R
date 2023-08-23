@@ -12,19 +12,22 @@
 #' an `"rising"` or `"falling"` trend is specified.
 #' Options: `"gentle"` or `"steep"`. The default value is
 #' set as \code{NULL} for the `stable` trend.
-#' @param first_pDate date of the first seasonal peak of
-#' the GTP (format: `"yyyy-mm-dd"`).
-#' Default value is \code{NULL}, in which first seasonal
-#' peak of 90 days is utilized.
-#' seasonal cycle of 180 days is utilized (that is,
-#' a seasonal cycle of 180 days).
-#' @param show.plot (logical) Shows GTP.
+#' @param shortTerm type of short- to medium-term
+#' fluctuations (patterns) of the time series.
+#' Options are: \code{`"cyclical"` and `"acyclical"`}.
+#' Default is: \code{`"cyclical"`}.
+#' @param fPeak first seasonal
+#' peak of cyclical short term. Default value is \code{90}.
+#' Set as \code{NULL} for `"acyclical"` short term pattern.
+#' @param show.plot (logical) Shows 'gtp'.
 #' Default is \code{FALSE}.
 #' @usage gtp(start_date, trend = "stable",
-#' slope = NULL, first_pDate = NULL, show.plot =FALSE)
+#' slope = NULL, shortTerm = "cyclical",
+#' fPeak = 90, show.plot =FALSE)
 #' @examples
 #' gtp(start_date = "2020-01-01", trend = "stable",
-#' slope = NULL, first_pDate = "2020-02-28", show.plot = FALSE)
+#' slope = NULL, shortTerm = "cyclical",
+#' fPeak = 90, show.plot = FALSE)
 #' @details Models the GTP for anchoring the temporal
 #' trends and patterns of the point patterns to be simulated.
 #' @return Returns a time series (list) of 365
@@ -33,11 +36,11 @@
 #' @export
 #'
 
-gtp <- function(start_date = "yyyy-mm-dd", trend = "stable",
-                slope = NULL, first_pDate=NULL,
-                show.plot = FALSE){
+gtp <- function(start_date = "2020-01-01", trend = "stable",
+                slope = NULL, shortTerm = "cyclical",
+                fPeak=90, show.plot = FALSE){
 
-  #function to check if start_date & first_pDate are
+  #function to check if start_date & fPeak are
   #in correct format
 
   #check that start_date has value
@@ -46,20 +49,24 @@ gtp <- function(start_date = "yyyy-mm-dd", trend = "stable",
   }
 
   #check first peak value
-  if(is.null(first_pDate)){
-    first_pDate <- as.Date(start_date) + 90
+  if(shortTerm == "cyclical"){
+  if(is.null(fPeak)){
+    fPeak <- 90
+    first_pDate <- as.Date(start_date) + fPeak
+  }
+
+  if(!is.null(fPeak)){
+    first_pDate <- as.Date(start_date) + fPeak
+  }
   }
 
   if(date_checker(c(start_date)) == FALSE){
     stop("The 'start_date' specified is not in the correct format!")
   }
 
-  if(date_checker(c(first_pDate)) == FALSE){
-    stop("The 'first_pDate' specified is not in the correct format!")
-  }
-
   #check if first_pDate is greater than start date
-  if(as.numeric(as.Date(first_pDate) - as.Date(start_date)) <= 0){
+  chk_date <- as.numeric(as.Date(start_date) - as.Date(first_pDate))
+  if(chk_date > 0){
     stop("The 'start_date' cannot be a later date than 'first_pDate' ")
   }
 
@@ -71,14 +78,24 @@ gtp <- function(start_date = "yyyy-mm-dd", trend = "stable",
   t <- seq(0, 365, by = 1)
   t2 <- t1 + t
 
-  #n-th day of peak since start_date
-  nth_day <- as.numeric(as.Date(first_pDate) - as.Date(start_date))
 
-  y <- 20 * cos(3 + 2 * pi * t/(2 * nth_day)) + 0.2 * sin(-1 * pi * t/15)
+  if(shortTerm == "cyclical"){
 
-  y <- y #* scale
+    #n-th day of peak since start_date
+    nth_day <- as.numeric(as.Date(first_pDate) - as.Date(start_date))
 
-  y <- (y + (-1 * min(y)))  #to remove negatives values and scale
+    y <- 20 * cos(3 + 2 * pi * t/(2 * nth_day)) + 0.2 * sin(-1 * pi * t/15)
+
+    y <- y #* scale
+
+    y <- (y + (-1 * min(y)))  #to remove negatives values and scale
+  }
+
+
+  if(shortTerm == "acyclical"){
+    y <- rep(60, length(t))
+  }
+
 
   #if trend is 'stable', slope has to be 'NULL'
   if(trend == "stable"){
@@ -87,8 +104,16 @@ gtp <- function(start_date = "yyyy-mm-dd", trend = "stable",
     }
   }
 
-  gentle <- ((max(y)/2) - min(y))/(365-0) #slope
-  steep <-  ((max(y)) - min(y))/(365-0) #slope
+  if(shortTerm == "cyclical"){
+    gentle <- ((max(y)/2) - min(y))/(365-0) #slope
+    steep <-  ((max(y)) - min(y))/(365-0) #slope
+  }
+
+  if(shortTerm == "acyclical"){
+    gentle <- 0.05#slope
+    steep <-  0.1 #slope
+  }
+
 
   if(trend == "falling"){
     if(is.null(slope)){
@@ -105,7 +130,7 @@ gtp <- function(start_date = "yyyy-mm-dd", trend = "stable",
     }
 
     y <- y + trendline
-
+    #plot(y)
   }
 
   if(trend == "rising"){
@@ -121,19 +146,24 @@ gtp <- function(start_date = "yyyy-mm-dd", trend = "stable",
       trendline <- 0 + steep * t
     }
 
+    if(shortTerm == "acyclical"){
+      y <- y - 30
+    }
     y <- y + trendline
+    #plot(y)
+  }
+
+  if(shortTerm == "cyclical"){
+    #remove negative values
+    y <- round(y + (-1 * min(y)), digits = 0) #to remove negatives values
+    baseline_occur <- 0.25 * (max(y)/2)
+    y <- round(y + baseline_occur, digits = 0) #add baseline
+    y_ <- data.frame(Date = t2, y)
   }
 
 
-  #remove negative values
-  y <- round(y + (-1 * min(y)), digits = 0) #to remove negatives values
-  baseline_occur <- 0.25 * (max(y)/2)
-  y <- round(y + baseline_occur, digits = 0) #add baseline
-  y_ <- data.frame(Date = t2, y)
-
-
-  output$data <- y
-
+  output$data <- round(y, digits = 0)
+  output$fPeak <- fPeak
   #output$plot <- plot(t, y, 'l')
 
   if(show.plot == TRUE){

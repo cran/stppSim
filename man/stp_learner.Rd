@@ -6,7 +6,8 @@
 a sample data}
 \usage{
 stp_learner(ppt, start_date = NULL, poly = NULL,
-n_origin=50, p_ratio, gridSize = 150,
+n_origin=50, p_ratio, gridSize = 150, s_range =  150,
+tolerance = 0.07,
 crsys = NULL, show.plot = FALSE)
 }
 \arguments{
@@ -34,6 +35,22 @@ implies a \code{20:80} Pareto ratio.}
 to use for discretizing the space.
 Default is: \code{150}.}
 
+\item{s_range}{A value (in metres), not less than 150,
+specifying the maximum range of spatial
+interaction across the space. For example, for 150m,
+the intervals of spatial interactions are created as
+\code{(0, 50]}, \code{(50 - 100]}, and \code{(100-150]},
+representing the "small", "medium", and "large",
+spatial interaction ranges, respectively. If
+\code{s_range} is set as \code{NULL}, simulation
+focusses only on generating point pattern with
+similar spatiotemporal patterns as the sample
+dataset.}
+
+\item{tolerance}{Pvalue to use for the extraction of
+space-time interaction in the sample data. Default
+value: \code{0.07}.}
+
 \item{crsys}{(string) the EPSG code of the projection
 system of the \code{ppt} coordinates. This only used if
 \code{poly} argument is \code{NULL}.
@@ -59,6 +76,7 @@ storing details of the spatiotemporal
 properties of the sample data learnt.
 }
 \examples{
+\dontrun{
 #Goal: To learn the ST properties
 #of a sample data, for the purpose of
 #simulating the full dataset (see `psim_real`).
@@ -76,8 +94,11 @@ replace=FALSE),]
 
 stp_learner(dat_sample,
 start_date = NULL, poly = NULL, n_origin=50,
-p_ratio=20, gridSize = 150, crsys = "EPSG:27700",
+p_ratio=20, gridSize = 150,
+s_range =  150, tolerance = 0.07,
+crsys = "EPSG:27700",
 show.plot = FALSE)
+}
 }
 \references{
 Silverman, B.W., 2018. Density estimation
