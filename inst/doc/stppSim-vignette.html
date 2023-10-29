@@ -1640,7 +1640,7 @@ spatiotemporal point patterns - A user guide</h1>
 <h4 class="author"><div class="line-block"><code>Adepeju, M.</code><br />
 <code>Big Data Centre, Manchester Metropolitan University, Manchester, M15 6BH, UK</code><br />
 <code>Author:</code></div></h4>
-<h4 class="date"><div class="line-block"><code>2023-08-23</code><br />
+<h4 class="date"><div class="line-block"><code>2023-10-29</code><br />
 <code>Date:</code></div></h4>
 <div class="abstract">
 <p class="abstract">Abstract</p>
@@ -1994,7 +1994,7 @@ pt_sizes = c(200, 1000, 2000)
 
 #simulate data
 artif_stpp &lt;- psim_artif(n_events=pt_sizes, start_date = &quot;2021-01-01&quot;,
-  poly=boundary, n_origin=50, resistance_feat = NULL,
+  poly=boundary, n_origin=50, restriction_feat = NULL,
   field = NA,
   n_foci=5, foci_separation = 10, mfocal = NULL,
   conc_type = &quot;dispersed&quot;,
@@ -2006,7 +2006,7 @@ artif_stpp &lt;- psim_artif(n_events=pt_sizes, start_date = &quot;2021-01-01&quo
 PC is <code>12.5 minutes</code>. The processing time is increases to
 <code>45.2</code> minutes if landscape restriction is added.
 Specifically, this increase occurs when the argument
-<code>resistance_feat = camden$landuse</code> is used, accompanied by
+<code>restriction_feat = camden$landuse</code> is used, accompanied by
 <code>field = &quot;val&quot;</code>.</p>
 <p>To retrieve the result of any <code>n_events</code>, simply type the
 object name with the value index. For example to retrieve the result
@@ -2017,7 +2017,7 @@ based on <code>n_events = 1000</code>, type:</p>
 </ul>
 <p>The configuration and clustering of events in the spatial domain can
 be fine-tuned by adjusting parameters that determine spatial components
-(such as <code>resistance_feat</code>, <code>n_origin</code>,
+(such as <code>restriction_feat</code>, <code>n_origin</code>,
 <code>mfocal</code>, <code>foci_separation</code>, <code>n_foci</code>,
 <code>s_band</code>, and so forth) as well as those that guide walker
 behaviors (for example, <code>step_length</code>,
@@ -2037,14 +2037,14 @@ the function.</p>
 default arguments, as demonstrated in the previous code.</p>
 <p><code>Figure 4b</code> presents the pattern resulting from the
 integration of additional parameters:
-<code>resistance_feat = camden$landuse</code> and
+<code>restriction_feat = camden$landuse</code> and
 <code>mfocal = c(530000, 182250)</code>. Here, the first parameter
 restricts the number of events created within the land use (restriction)
 features, while the second emphasizes a central spatial concentration of
 origins, highlighted by a red dot on the map.</p>
 <p><code>Figure 4c</code> depicts the configuration when the parameters
-of <code>resistance_feat</code> and <code>mfocal</code> are retained (as
-in 4b), but with an added <code>foci_separation = 50</code>. This
+of <code>restriction_feat</code> and <code>mfocal</code> are retained
+(as in 4b), but with an added <code>foci_separation = 50</code>. This
 ensures a moderate spatial distance between individual origins.</p>
 <p>Lastly, <code>Figure 4d</code> illustrates the spatial pattern when,
 besides maintaining the <code>mfocal</code> setting (similar to the
@@ -2112,7 +2112,7 @@ pt_sizes = c(1500)
 
 #simulate data
 artif_stpp &lt;- psim_artif(n_events=pt_sizes, start_date = NULL,
-  poly=boundary, n_origin=50, resistance_feat = NULL,
+  poly=boundary, n_origin=50, restriction_feat = NULL,
   field = NA,
   n_foci=5, foci_separation = 10, mfocal = NULL,
   conc_type = &quot;dispersed&quot;,

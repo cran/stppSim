@@ -1,7 +1,7 @@
 Package: stppSim
 Type: Package
 Title: Spatiotemporal Point Patterns Simulation
-Version: 1.3.1
+Version: 1.3.2
 Author: Monsuru Adepeju [cre, aut]
 Maintainer: Monsuru Adepeju <monsuur2010@yahoo.com>
 Description: Generates artificial spatiotemporal (ST) point patterns
@@ -39,6 +39,6 @@ Collate: 'NRepeat.R' 'artif_spo.R' 'chull_poly.R' 'compare_areas.R'
         'psim_artif.R' 'psim_real.R' 'snap_points_to_lines.R'
         'space_restriction.R' 'stm.R' 'stp_learner.R'
 NeedsCompilation: no
-Packaged: 2023-08-23 00:22:30 UTC; 55131065
+Packaged: 2023-10-29 20:25:12 UTC; 55131065
 Repository: CRAN
-Date/Publication: 2023-08-23 07:20:02 UTC
+Date/Publication: 2023-10-29 21:20:02 UTC

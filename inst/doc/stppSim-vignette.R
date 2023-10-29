@@ -74,7 +74,7 @@ knitr::include_graphics("trend.png")
 #  
 #  #simulate data
 #  artif_stpp <- psim_artif(n_events=pt_sizes, start_date = "2021-01-01",
-#    poly=boundary, n_origin=50, resistance_feat = NULL,
+#    poly=boundary, n_origin=50, restriction_feat = NULL,
 #    field = NA,
 #    n_foci=5, foci_separation = 10, mfocal = NULL,
 #    conc_type = "dispersed",
@@ -108,7 +108,7 @@ knitr::include_graphics("onemonth.png")
 #  
 #  #simulate data
 #  artif_stpp <- psim_artif(n_events=pt_sizes, start_date = NULL,
-#    poly=boundary, n_origin=50, resistance_feat = NULL,
+#    poly=boundary, n_origin=50, restriction_feat = NULL,
 #    field = NA,
 #    n_foci=5, foci_separation = 10, mfocal = NULL,
 #    conc_type = "dispersed",
