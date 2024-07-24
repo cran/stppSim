@@ -1,6 +1,6 @@
-30b621ce2865057f10b46d564b644d0e *DESCRIPTION
+e24d0a61d8b11340e550c3a83692b677 *DESCRIPTION
 f3baf775e88eb118bb5f3140c36bcd03 *NAMESPACE
-2efa3df38bd61ba12a6e4419a190e923 *NEWS.md
+ffe8078ebc3fc49c529415b31c075ad7 *NEWS.md
 8dec75f09e01e42bf737229c0e6d5a34 *R/NRepeat.R
 d2ed918fd3882ff3c06b80c2d9f10a0e *R/artif_spo.R
 b532d381050fa586cc668fe6a082a5d8 *R/chull_poly.R
@@ -9,7 +9,7 @@ d4121a443303a4e0711f9bb80837526e *R/data.R
 590b2530bb9a8478fd57c1e768995e24 *R/date_checker.R
 18ee3440315cd1c857018bef13f9e14c *R/extract_coords.R
 6da2ba06ac7de1802e07836017bf2982 *R/gtp.R
-78fc8107acea271e5ff4c1760099f2ee *R/make_grids.R
+04f8899c87f36adba52c03770e7c307c *R/make_grids.R
 2632df88c124b6b4f223ef2adb842816 *R/p_prob.R
 8651aa1f50900613d7308d1dc31d3167 *R/poly_tester.R
 9e47e0fcf77b0783abbc50330b56a98f *R/psim_artif.R
@@ -27,8 +27,8 @@ ac24a3525151a19912b7a0fcccb3bf9d *data/poly.rda
 9f76e7baace91d69305824d8b96bf5ea *data/xyt_data.rda
 6f7fb76f09036d871bc9af125296bdc9 *data/xyz.rda
 24244ff8da9862b34972e439287db775 *inst/doc/stppSim-vignette.R
-2e14591c1f09782ff39a9a307589f21f *inst/doc/stppSim-vignette.Rmd
-9b0cf6f2fb3131ccbc3f7323a3d2ec2c *inst/doc/stppSim-vignette.html
+a07f44cf09cf666d24325878968d821e *inst/doc/stppSim-vignette.Rmd
+ebf9bb51d201667ac792106ad8acbc86 *inst/doc/stppSim-vignette.html
 c7cde825414d29fd3abdee029d406d88 *inst/extdata/birmingham_boundary.rda
 359e22e3d218faa6f274c092a1d32bc5 *inst/extdata/camden.rda
 b294d4025b360078d7118a1b6e73b930 *man/NRepeat.Rd
@@ -39,7 +39,7 @@ b9a1b2c7532602dd6a4a4c6606ef0550 *man/chull_poly.Rd
 fcbec3ffee544c802b87f4dbc5a94a00 *man/date_checker.Rd
 3fd49180cee622c441a352ed78e71461 *man/extract_coords.Rd
 60b2f53c7c963435720318dfe468ee9c *man/gtp.Rd
-2ade856fdcbad52f8a84449e99c96e48 *man/make_grids.Rd
+d7ba35b360e51cce12436454a559dcb2 *man/make_grids.Rd
 f80537824c51f738b7669ad37a14b4fa *man/p_prob.Rd
 425bf03ac1b391ba936ec35810034bba *man/poly.Rd
 b96976bf51e87228fc99d310de87ffea *man/poly_tester.Rd
@@ -65,6 +65,6 @@ b7a8fed3f60d1006cc3b843215733782 *vignettes/samplerealvssampleaggregated.png
 88d8a2dae9743edc05033989eaf94d3b *vignettes/simvsreal2.png
 488c4ad57325067427796d22c8ed697c *vignettes/simvsreal_spatial.png
 46a2b86b8147fa8750a890c4e4aa316e *vignettes/simvsreal_temporal.png
-2e14591c1f09782ff39a9a307589f21f *vignettes/stppSim-vignette.Rmd
+a07f44cf09cf666d24325878968d821e *vignettes/stppSim-vignette.Rmd
 71dea3c96c6de61e5db1d70d4fc8b858 *vignettes/temporalscratch.png
 4d7462b1026d1beccf7685155d80e514 *vignettes/trend.png
